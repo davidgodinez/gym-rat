@@ -1,1 +1,4 @@
 .DS_Store
+env/
+ProtoStax_Arduino_Nano_BLE_RGBLED_Service/__pycache__/
+ProtoStax_Arduino_Nano_BLE_RGBLED_Service/.DS_Store micropython/.DS_Store
