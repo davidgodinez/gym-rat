@@ -61,7 +61,7 @@ void setup() {
 
   // set the initial value for the characeristic:
   // CharacteristicX.writeValue(0);
-  CharacteristicY.writeValue(0);
+  CharacteristicY.writeValue(0.0);
   // CharacteristicZ.writeValue(0);
 
   // start advertising
@@ -74,6 +74,7 @@ void setup() {
 }
 
 void loop() {
+  // char myString ;
    BLEDevice central = BLE.central();
    if (central) {
      Serial.print("Connected to central ");
@@ -87,19 +88,23 @@ void loop() {
 
     if (IMU.gyroscopeAvailable()) {
       IMU.readGyroscope(x, y, z);
+      CharacteristicY.writeValue(y*1000);
     }
     if(y > plusThreshold)
     {
       Serial.println("Up");
+      Serial.println(y);
+      // char myString[] = "Up";
       delay(500);
     }
     if(y < minusThreshold)
     {
       Serial.println("Down");
+      Serial.println(y);
+      // char myString[] = "Down";
       delay(500);
     }  
     // CharacteristicX.writeValue(x*100);
-    CharacteristicY.writeValue(y*100);
     // CharacteristicZ.writeValue(z*100);
   }
 }

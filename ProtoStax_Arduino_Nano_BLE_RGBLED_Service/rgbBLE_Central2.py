@@ -47,27 +47,10 @@ from bleak import BleakClient, BleakScanner, discover
 # These values have been randomly generated - they must match between the Central and Peripheral devices
 # Any changes you make here must be suitably made in the Arduino program as well
 
-# RED_LED_UUID = '13012F01-F8C3-4F4A-A8F4-15CD926DA146'
-# GREEN_LED_UUID = '13012F02-F8C3-4F4A-A8F4-15CD926DA146'
-# BLUE_LED_UUID = '13012F03-F8C3-4F4A-A8F4-15CD926DA146'
-
 # X_AXIS_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
 Y_AXIS_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
 # Z_AXIS_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
 
-
-on_value = bytearray([0x01])
-off_value = bytearray([0x00])
-
-
-
-def getValue(on):
-    if on:
-        return on_value
-    else:
-        return off_value
-
-    
 
 async def run():
     global RED, GREEN, BLUE
@@ -86,11 +69,14 @@ async def run():
                 for service in client.services:
                     print(service)
                 print(f'Connected to {d.address}')
-                val = bytes(await client.read_gatt_char(Y_AXIS_UUID))
-                # new_val = val.decode()
-                val = str(val)
-                for i in range(len(val)):
-                    print(ord(val[i]))
+                while True:
+                    val = bytes(await client.read_gatt_char(Y_AXIS_UUID))
+                    print(val)
+                    val1 = str(val)
+                    print(bytes(val1,encoding='utf-8'))
+                    
+                    for i in range(len(val)):
+                        print(ord(val1[i]))
 
     if not found:
         print('Could not find Arduino Nano 33 BLE Sense Peripheral')
@@ -99,6 +85,8 @@ async def run():
 loop = asyncio.get_event_loop()
 try:
     loop.run_until_complete(run())
+    # asyncio.ensure_future(run())
+    # loop.run_forever()
 except KeyboardInterrupt:
     print('\nReceived Keyboard Interrupt')
 finally:
