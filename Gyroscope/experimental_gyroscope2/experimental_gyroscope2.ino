@@ -86,27 +86,33 @@ void loop() {
 
     float x, y, z;
 
+
     if (IMU.gyroscopeAvailable()) {
       IMU.readGyroscope(x, y, z);
+      if (y > plusThreshold) {
       CharacteristicY.writeValue(y);
+      }
+    else if (y < minusThreshold) {
+      CharacteristicY.writeValue(1000);
+    }
 
     }
-    if(y > plusThreshold)
-    {
-      Serial.println("Up");
-      Serial.println(y);
-      // CharacteristicY.writeValue(y*1000);
-      // char myString[] = "Up";
-      delay(500);
-    }
-    if(y < minusThreshold)
-    {
-      Serial.println("Down");
-      Serial.println(y);
-      // CharacteristicY.writeValue(y*1000);
-      // char myString[] = "Down";
-      delay(500);
-    }  
+    // if(y > plusThreshold)
+    // {
+    //   Serial.println("Up");
+    //   Serial.println(y);
+    //   // CharacteristicY.writeValue(y*1000);
+    //   // char myString[] = "Up";
+    //   delay(500);
+    // }
+    // if(y < minusThreshold)
+    // {
+    //   Serial.println("Down");
+    //   Serial.println(y);
+    //   // CharacteristicY.writeValue(y*1000);
+    //   // char myString[] = "Down";
+    //   delay(500);
+    // }  
 
     // CharacteristicY.writeValue(y*1000);
     // CharacteristicX.writeValue(x*100);
