@@ -1,19 +1,11 @@
-// Here does nothing 
-
 /*
-  Arduino LSM9DS1 - Simple Accelerometer
-
-  This example reads the acceleration values from the LSM9DS1
-  sensor and continuously prints them to the Serial Monitor
-  or Serial Plotter.
+  Arduino Gyroscope
 
   The circuit:
   - Arduino Nano 33 BLE Sense
 
-  created 10 Jul 2019
-  by Riccardo Rizzo
-
-  This example code is in the public domain.
+  created 20 August, 2022
+  by David Godinez
 */
 
 #include <ArduinoBLE.h>
@@ -74,14 +66,13 @@ void setup() {
 }
 
 void loop() {
-  // char myString ;
    BLEDevice central = BLE.central();
    if (central) {
      Serial.print("Connected to central ");
      Serial.print(central.address());
      digitalWrite(LED_BUILTIN, HIGH);
    }
-  // BLE.poll();
+   
    while (central.connected()) {
 
     float x, y, z;
