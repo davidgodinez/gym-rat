@@ -33,7 +33,6 @@ from bleak import BleakClient, BleakScanner, discover
 # Any changes you make here must be suitably made in the Arduino program as well
 
 Y_AXIS_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
-
 CONNECTION_STRING = "HostName=davidiothub2.azure-devices.net;DeviceId=raspberrypi;SharedAccessKey=yxztDdIOVP3vWCfpyF3G7N1KljKhWFEEkWuYrlyl0Kg="
 
 
@@ -51,7 +50,7 @@ async def run():
     print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
 
     found = False
-    devices = await discover()
+    devices = await BleakScanner.discover()
     for d in devices:       
         if 'BLE'in d.name:
             print('Found BLE Peripheral')
@@ -74,11 +73,6 @@ async def run():
                         counter= counter + 1
                         print(counter)
                         print(f'sending message {counter}')
-                #         # Build the message with simulated telemetry values.
-                #         first = From
-                #         second = To
-                #         msg_txt_formatted = MSG_TXT.format(first=first, second=second)
-                #         message = Message(msg_txt_formatted)
                         first = 'Raspberry Pi'
                         second = str(counter)
                         MSG_TXT = '{{"From": {first},"Message": {second}}}'
@@ -93,44 +87,14 @@ async def run():
     if not found:
         print('Could not find Arduino Nano 33 BLE Sense Peripheral')
 
-                    
+# define as main():                     
 loop = asyncio.get_event_loop()
 try:
-    client = iothub_client_init()
-    print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
     loop.run_until_complete(run())
 except KeyboardInterrupt:
     print('\nReceived Keyboard Interrupt')
 finally:
     print('Program finished')
 
-
-# # Define the JSON message to send to IoT Hub.
-# From = "Pi"
-# To = "Azure"
-# MSG_TXT = '{{"From": {first},"To": {second}}}'
-
-
-
-# def iothub_client_telemetry_sample_run():
-
-    # try:
-    #     client = iothub_client_init()
-    #     print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
-    #     while True:
-    #         # Build the message with simulated telemetry values.
-    #         first = From
-    #         second = To
-    #         msg_txt_formatted = MSG_TXT.format(first=first, second=second)
-    #         message = Message(msg_txt_formatted)
-
-    #         # Send the message.
-    #         print( "Sending message: {}".format(message) )
-    #         client.send_message(message)
-    #         print ( "Message successfully sent" )
-    #         sleep(3)
-
-    # except KeyboardInterrupt:
-    #     print ( "IoTHubClient sample stopped" )
 
         
