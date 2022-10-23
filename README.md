@@ -6,6 +6,8 @@ This README will be used to help you get started on setting up the arduinos, ras
 
 Install Gyroscope.ino on your arduino using the web editor or install IDE on your computer and run Central.py from your raspberry pi after you have created a virtual environment and pip install requirements.txt. My workflow involves ssh-ing into the raspberry pi from my desktop. This allows me to use vscode and simply copy over any modified files to the raspberry pi using the `scp` command. 
 
+`scp path/to/Central.py pi@11.1.1.11:/home/pi/`
+
 From there, place your arduino atop some weights in the gym and stream to your raspberry pi and azure directly. 
 
 I am currently working on setting up the database end. This data will be stored in a data warehouse and further analyzed. It will all update your ios/android app in real time.
@@ -14,4 +16,5 @@ I am currently working on setting up the database end. This data will be stored 
 
 Create Gymrat database
 create table and table mapping copying text from `initial_queries.kql`.
+
 Enjoy :)
