@@ -13,7 +13,7 @@ CREATE TABLE Gym (
 	Open_hours varchar(255)
 )
 
-CREATE TABLE GYM_ADDRESS (
+CREATE TABLE Gym_address (
 	Gym_id int FOREIGN KEY REFERENCES Gym(Gym_id),
 	Street varchar(255),
 	City varchar(255),

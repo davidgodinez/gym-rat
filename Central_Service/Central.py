@@ -32,21 +32,21 @@ from bleak import BleakClient, BleakScanner
 Y_AXIS_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
 
 # Connection string taken from iothub device. 
-CONNECTION_STRING = "HostName=davidiothub2.azure-devices.net;DeviceId=raspberrypi;SharedAccessKey=yxztDdIOVP3vWCfpyF3G7N1KljKhWFEEkWuYrlyl0Kg="
-GYM_ID = 57 # This will be encoded better. For now this works as demo. 
+CONNECTION_STRING = "HostName=davidsiothub1.azure-devices.net;DeviceId=raspberrypi;SharedAccessKey=z6dU94G4frZoL9+GSf+PNOtyGp8UG2ExFm0zcm7GTnU="
+GYM_ID = 1 # This will be encoded better. For now this works as demo. 
 MACHINE_ID = 1 #This will be encoded better. For now this works as demo. 
 
 # TO DO
 
 def user():
     # This will take the input from the RFID tag and return the person's username or userID which will all be linked in database :D 
-    username = 'David Godinez'
+    username = 1
     return username
 
 def weight():
     # This will take the input from second arduino's relative position to calculate weight in lbs
-    weight = 75
-    return weight
+    weight_id = 1
+    return weight_id
 
 def get_time():
     now = datetime.datetime.now()
@@ -104,7 +104,7 @@ async def run():
                         # first = 'Raspberry Pi'
                         # second = str(counter)
                         date_time = str(datetime.datetime.now())
-                        telemetry_message = {"gym_id": GYM_ID, "machine_id": MACHINE_ID, "user": user(), "counter": counter, "weight": weight(), "datetime": get_time()}
+                        telemetry_message = {"gym_id": GYM_ID, "machine_id": MACHINE_ID, "user_id": user(), "rep_count": counter, "weight": weight(), "reptime": get_time()}
                         send_telemetry_from_pi(new_messenger, telemetry_message)
                         print('message successfully sent!')
                     sleep(0.5)

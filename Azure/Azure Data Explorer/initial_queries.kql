@@ -1,11 +1,9 @@
-.create table Raspberrypi (gym_id: int, machine_id: int, user: string, repcount:real, weight: int, reptime: string)
+.create table Raspberrypi (gym_id: int, machine_id: int, user_id: int, repcount:int, weight: int, rep_time: string)
 
+.create table Raspberrypi ingestion json mapping 'TestMapping1' '[{"column":"gym_id","path":"$.gym_id","datatype":"int"},
+                                                                  {"column":"machine_id","path":"$.machine_id","datatype":"int"},
+                                                                  {"column":"user_id","path":"$.user_id","datatype":"int"},
+                                                                  {"column":"repcount","path":"$.rep_count","datatype":"int"},
+                                                                  {"column":"weight","path":"$.weight","datatype":"int"},
+                                                                  {"column":"reptime","path":"$.reptime","datatype":"string"}]'
 
-// Note you might have to put this all on one line 
-.create table Raspberrypi ingestion json mapping 'TestMapping11'
-'[{"column":"gym_id","path":"$.gym_id","datatype":"int"},
-  {"column":"machine_id","path":"$.machine_id","datatype":"int"},
-  {"column":"user","path":"$.user","datatype":"string"},
-  {"column":"repcount","path":"$.counter","datatype":"real"},
-  {"column":"weight","path":"$.weight","datatype":"int"},
-  {"column":"reptime","path":"$.datetime","datatype":"string"}]'
