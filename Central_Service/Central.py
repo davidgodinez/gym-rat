@@ -32,7 +32,7 @@ from bleak import BleakClient, BleakScanner
 Y_AXIS_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
 
 # Connection string taken from iothub device. 
-CONNECTION_STRING = "HostName=davidsiothub1.azure-devices.net;DeviceId=raspberrypi;SharedAccessKey=z6dU94G4frZoL9+GSf+PNOtyGp8UG2ExFm0zcm7GTnU="
+CONNECTION_STRING = "HostName=restartedhub1.azure-devices.net;DeviceId=raspberrypi-1;SharedAccessKey=LisBgX0dsS1HPRvBqJ6N9yxFXX45luiRHJag2G2SF/I="
 GYM_ID = 1 # This will be encoded better. For now this works as demo. 
 MACHINE_ID = 1 #This will be encoded better. For now this works as demo. 
 
@@ -50,7 +50,7 @@ def weight():
 
 def get_time():
     now = datetime.datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
     return dt_string
 
 def iothub_client_init():
