@@ -59,7 +59,7 @@ void setup() {
   // start advertising
   BLE.advertise();
 
-  Serial.println("BLE LED Peripheral");
+  Serial.println("BLE Peripheral");
   pinMode(LED_BUILTIN, OUTPUT);
 
   
