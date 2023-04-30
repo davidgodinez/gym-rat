@@ -18,3 +18,7 @@ Create Gymrat database
 create table and table mapping copying text from `initial_queries.kql`.
 
 Enjoy :)
+
+
+Updated scripts: 
+use `Central_gpt.py` and `gym_rat_arduino.ino`
