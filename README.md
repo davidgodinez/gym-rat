@@ -19,6 +19,5 @@ create table and table mapping copying text from `initial_queries.kql`.
 
 Enjoy :)
 
-
 Updated scripts: 
-use `Central_gpt.py` and `gym_rat_arduino.ino`
+use `Central_070923.py` and `Gyroscope_070823.ino`

@@ -26,6 +26,8 @@ from time import sleep
 from azure.iot.device import IoTHubDeviceClient
 from azure.iot.device import Message
 from bleak import BleakClient, BleakScanner
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
 
 # These values have been randomly generated - they must match between the Central and Peripheral devices
 # Any changes you make here must be suitably made in the Arduino program as well
@@ -38,10 +40,19 @@ MACHINE_ID = 1 #This will be encoded better. For now this works as demo.
 
 # TO DO
 
+def read_from_reader():
+    reader = SimpleMFRC522()
+    try:
+        rfid, text = reader.read()
+        return rfid, text
+    
+    finally:
+        GPIO.cleanup()
+
+user_id = 0
+
 def user():
-    # This will take the input from the RFID tag and return the person's username or userID which will all be linked in database :D 
-    username = 1
-    return username
+    return user_id
 
 def weight():
     # This will take the input from second arduino's relative position to calculate weight in lbs
@@ -68,6 +79,7 @@ def send_telemetry_from_pi(new_messenger,telemetry_msg):
 
 
 async def run():
+    global user_id
     new_messenger = iothub_client_init()
     print('BLE Peripheral Central Service')
     print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
@@ -75,17 +87,22 @@ async def run():
 
     # Find device
     found = False
-    devices = await BleakScanner.discover(timeout=20.0)
+    devices = await BleakScanner.discover()
     for d in devices:       
-        if d.name is not None and 'BLE' in d.name:
-            print('Found BLE')
+        if 'BLE Rep Counter'in d.name:
+            print('Found BLE Peripheral')
             found = True
-            async with BleakClient(d.address) as client:
+            async with BleakClient(d.address, timeout=20.0) as client:
                 print("Services")
                 for service in client.services:
                     print(service)
                 print(f'Connected to {d.address}')
                 counter = 0
+                # Wait for RFID tag to be scanned before starting main loop
+                print('waiting for user to present their id card')
+                rfid, text = read_from_reader()
+                user_id = rfid # Update the global variable
+                print(f'Hi, {text}, you may start working out.')
 
                 # Main loop. Listening for arduino messages and loggin in counter variable. 
                 while True:
@@ -95,6 +112,12 @@ async def run():
                     val1 = str(val)
                     if val1 == str(b'\xe8\x03\x00\x00') or val1 == str(b'\x00\x00\x00\x00'):
                         print('None')
+
+                    # Check if the same RFID tag is scanned again
+                        rfid, text = read_from_reader()
+                        if rfid == user_id:
+                            print("Session ended; thank you! Stopping script.")
+                            break
                     #TODO include logic that defaulst back to 0 after a value has been counted. 
                     # I.e if still 'up' it won't continue counting but go back to 0
                     else:
@@ -107,6 +130,11 @@ async def run():
                         telemetry_message = {"gym_id": GYM_ID, "machine_id": MACHINE_ID, "user_id": user(), "rep_count": counter, "weight": weight(), "reptime": get_time()}
                         send_telemetry_from_pi(new_messenger, telemetry_message)
                         print('message successfully sent!')
+                    # Check if the same RFID tag is scanned again
+                        # rfid, text = read_from_reader()
+                        # if rfid == user_id:
+                        #     print("Session ended; thank you! Stopping script.")
+                        #     break
                     sleep(0.5)
 
     if not found:
