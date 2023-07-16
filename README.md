@@ -20,4 +20,4 @@ create table and table mapping copying text from `initial_queries.kql`.
 Enjoy :)
 
 Updated scripts: 
-use `Central_070923.py` and `Gyroscope_070823.ino`
+use `Central_071523_iot.py` and `Gyroscope_071523.ino`
