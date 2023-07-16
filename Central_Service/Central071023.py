@@ -10,6 +10,9 @@ from time import sleep
 from azure.iot.device import IoTHubDeviceClient
 from azure.iot.device import Message
 from bleak import BleakClient, BleakScanner
+from mfrc522 import SimpleMFRC522
+import RPi.GPIO as GPIO
+
 
 # These values have been randomly generated - they must match between the Central and Peripheral devices
 REP_COUNTER_UUID = "17c73c1a-4bc7-11ed-bdc3-0242ac120002"
@@ -19,24 +22,19 @@ CONNECTION_STRING = "HostName=restartedhub1.azure-devices.net;DeviceId=raspberry
 GYM_ID = 1 # This will be encoded better. For now this works as demo. 
 MACHINE_ID = 1 #This will be encoded better. For now this works as demo. 
 
+# Global variable for storing the user id
+user_id = 0
 
-# from mfrc522 import SimpleMFRC522
-
-# def user():
-#     reader = SimpleMFRC522()
-#     try:
-#         print("Hold a tag near the reader")
-#         id, name = reader.read()
-#         print(f"Tag ID: {id}")
-#         print(f"Tag Name: {name}")
-#         return name
-#     finally:
-#         GPIO.cleanup()
-
+def read_from_reader():
+    reader = SimpleMFRC522()
+    try:
+        rfid, text = reader.read()
+        return rfid, text
+    finally:
+        GPIO.cleanup()
 
 def user():
-    username = 1
-    return username
+    return user_id
 
 def weight():
     weight_id = 1
@@ -61,6 +59,7 @@ def send_telemetry_from_pi(new_messenger,telemetry_msg):
     new_messenger.send_message(msg)
 
 async def run():
+    global user_id
     new_messenger = iothub_client_init()
     print('BLE Peripheral Central Service')
     print ( "IoT Hub device sending periodic messages, press Ctrl-C to exit" )
@@ -73,6 +72,11 @@ async def run():
         if d.name is not None and 'BLE Rep Counter' in d.name:
             print('Found BLE Peripheral')
             found = True
+
+            # Add a delay here
+            print('Delaying for 5 seconds before attempting to connect...')
+            sleep(5)
+            
             async with BleakClient(d.address) as client:
                 try:
                     print(f'Connected to {d.address}')
@@ -88,6 +92,14 @@ async def run():
 
                     counter = 0
                     last_rep_count = -1
+                    
+                    # Wait for RFID tag to be scanned before starting main loop
+                    print('waiting for user to present their id card')
+                    rfid, text = read_from_reader()
+                    user_id = rfid # Update the global variable
+                    print(f'Hi, {text}, you may start working out.')
+
+                    
                     # Main loop. Listening for arduino messages and logging in counter variable. 
                     while True:
                         val = bytes(await client.read_gatt_char(REP_COUNTER_UUID))
@@ -106,6 +118,13 @@ async def run():
                                 }
                                 send_telemetry_from_pi(new_messenger, telemetry_message)
                                 last_rep_count = counter
+
+                        # Check if the same RFID tag is scanned again
+                        rfid, text = read_from_reader()
+                        if rfid == user_id:
+                            print("Session ended; thank you! Stopping script.")
+                            break
+
                         sleep(0.5)
                 except Exception as e:
                     print(f"Exception occurred: {e}")

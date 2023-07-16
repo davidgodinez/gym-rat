@@ -77,7 +77,7 @@ async def run():
     found = False
     devices = await BleakScanner.discover()
     for d in devices:       
-        if 'BLE'in d.name:
+        if d.name is not None and 'BLE' in d.name:
             print('Found BLE Peripheral')
             found = True
             async with BleakClient(d.address) as client:
