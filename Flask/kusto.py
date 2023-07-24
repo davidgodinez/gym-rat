@@ -14,7 +14,7 @@ KCSB = KustoConnectionStringBuilder.with_aad_device_authentication(
     KUSTO_CLUSTER)
 KCSB.authority_id = AAD_TENANT_ID
 KUSTO_CLIENT = KustoClient(KCSB)
-KUSTO_QUERY = "Raspberrypi | sort by reptime desc| take 1"
+KUSTO_QUERY = "Raspberrypi | top 1 by rep_time desc "
 RESPONSE = KUSTO_CLIENT.execute(KUSTO_DATABASE, KUSTO_QUERY)
 
 def get_data2():

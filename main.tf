@@ -41,9 +41,10 @@ resource "azurerm_kusto_cluster" "example" {
 }
 
 resource "azurerm_private_dns_zone" "example" {
-  name                = "gymratprivatednszone"
+  name                = "gymrat.private"  # Changed this line
   resource_group_name = azurerm_resource_group.rg.name
 }
+
 
 resource "azurerm_virtual_network" "example" {
   name                = "gymrat-vnet"
@@ -98,11 +99,22 @@ resource "azurerm_virtual_machine" "example" {
     disable_password_authentication = false
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get upgrade -y",
-      "sudo apt-get -y install python3"
-    ]
+provisioner "remote-exec" {
+  inline = [
+    "sudo apt-get update",
+    "sudo apt-get upgrade -y",
+    "sudo apt-get -y install python3"
+  ]
+
+  connection {
+    type     = "ssh"
+    user     = var.admin_username
+    password = var.admin_password
+    host     = azurerm_network_interface.example.private_ip_address
+    timeout = "30m"
+
+  }
   }
 }
+
+
